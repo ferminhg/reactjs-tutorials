@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Loading from './Loading';
-import Item from './Item'
-
+import Item from './Item';
+import Header from './Header';
+import Add from './Add';
 import { getVideos } from '../api';
 
 class List extends Component {
@@ -11,7 +12,10 @@ class List extends Component {
             isLoading: false,
             videos: null,
             error: null,
+            showAdd: false,
         }
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleCloseAdd = this.handleCloseAdd.bind(this);
     }
     //sitio ideal para realizar llamadas externas
     async componentDidMount() {
@@ -27,6 +31,22 @@ class List extends Component {
             this.setState({error, isLoading:false });
         }
     }
+    handleAdd(e) {
+        e.preventDefault();
+        this.setState({showAdd: true});
+    }
+    handleCloseAdd(reload){
+        return () => {
+          if(reload){
+            this.setState({ isLoading: true , showAdd:false});
+            getVideos().then(data => this
+              .setState({ videos: data, isLoading: false, showAdd:false }))
+              .catch(error => this.setState({ error, isLoading: false, showAdd:false }));
+          } else {
+            this.setState({ showAdd: false });
+          }
+        }
+      }
     render() {
         const { videos, isLoading, error } = this.state;
         if (error) {
@@ -36,6 +56,7 @@ class List extends Component {
             return (<Loading message="Cargando wopwop ..."/>);
         }
         return (<React.Fragment>
+            <Header onClickAdd={this.handleAdd}/>
             <div className="container">
                 <div className="grid-container">
                     {
@@ -45,6 +66,7 @@ class List extends Component {
                     }
                 </div>
             </div>
+            { this.state.showAd && (<Add onClose={this.handleCloseAdd}/>) }
         </React.Fragment>);
     }
 }

@@ -1,15 +1,21 @@
-import React from 'react';
-import ProtoTypes from 'prop-types';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom'
 
-const Item = ({data}) => (
-    <div className="grid-item" >
-        <img className="preview-image" src={data.image} alt={data.name}/>
-        <div className="preview-title">{data.name}</div>
-    </div>
-);
-
-Item.prototype = {
-    data: ProtoTypes.object.isRequired
+class Item extends Component{
+    render(){
+        const { id, image, name } = this.props.data;
+        return (<Link className="grid-item-link" to={`/${id}`}>
+            <div className="grid-item" >
+                <img className="preview-image" src={image} alt={name}/>
+                <div className="preview-title">{name}</div>
+            </div>
+        </Link>);
+    }
 }
+
+Item.propTypes = {
+    data: PropTypes.object.isRequired
+};
 
 export default Item;
