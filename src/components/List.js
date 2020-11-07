@@ -2,34 +2,36 @@ import React, { Component } from 'react';
 import Loading from './Loading';
 import Item from './Item'
 
+import { getVideos } from '../api';
+
 class List extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isLoading: false,
             videos: null,
+            error: null,
         }
     }
-    componentDidMount() {
-        this.setState({isLoading: true});
-        //Emulación de llamada a API externa
-        setTimeout(() => {
-            this.setState({ isLoading: false , videos:[{
-                id:0,
-                title:'¿Qué es CodelyTV? 🍄🔝 - Formación para programadores y divulgación del mundo del desarrollo',
-                url:'https://www.youtube.com/watch?v=rpMQd2DazTc',
-                thumbnail:'https://img.youtube.com/vi/rpMQd2DazTc/maxresdefault.jpg',
-                },
-                {
-                id:1,
-                title:'Introducción a PHP: Cómo configurar tu entorno de desarrollo 🐘',
-                url: 'https://www.youtube.com/embed/watch?v=v2IjMrpZog4',
-                thumbnail: 'https://img.youtube.com/vi/v2IjMrpZog4/maxresdefault.jpg',
-                }]});
-        },2000);
+    //sitio ideal para realizar llamadas externas
+    async componentDidMount() {
+        // Promises example
+        // this.setState({isLoading: true});
+        // getVideos().then(data => {
+        //     this.setState({ isLoading: false , videos:data});
+        // })
+        try {
+            const videos = await getVideos();
+            this.setState({videos, isLoading: false});
+        } catch(error) {
+            this.setState({error, isLoading:false });
+        }
     }
     render() {
-        const { videos, isLoading } = this.state;
+        const { videos, isLoading, error } = this.state;
+        if (error) {
+            return (<div>ERROR</div>);
+        }
         if (isLoading) {
             return (<Loading message="Cargando wopwop ..."/>);
         }

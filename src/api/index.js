@@ -52,13 +52,32 @@ export const addVideo = (newVideo) => new Promise((resolve, reject) => {
     },FAKE_DELAY);
 });
 
+export const getCharacters = async () => {
+    try {
+        const resp = await fetch('https://rickandmortyapi.com/api/character/');
+        return resp.json();
+    }catch(error){
+        throw error;
+    }
+}
+
+// export const getVideos = async () => {
+//     try {
+//         const resp = await getCharacters();
+//         return resp.results;
+//     }catch(error){
+//         throw error;
+//     }
+// }
+
 export const getVideos = () => new Promise((resolve, reject) => {
-    setTimeout(() => {
-        return resolve(FAKE_DATA);
-    },FAKE_DELAY);
+    getCharacters()
+        .then(data => {
+            return resolve(data.results)
+        });
 });
 
-// Return a description from server
+//Return a description from server
 const getDescription = async () => {
     try{
         const resp = await fetch('https://baconipsum.com/api/?type=all-meat&paras=3&start-with-lorem=1');
